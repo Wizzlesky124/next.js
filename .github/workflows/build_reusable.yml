@@ -11,6 +11,11 @@ on:
         required: false
         description: 'whether to skip pnpm install && pnpm build'
         type: string
+      skipPnpmCacheCopy:
+        required: false
+        description: 'whether to skip copying the pnpm cache to tmpfs'
+        type: boolean
+        default: false
       skipNativeBuild:
         required: false
         description: 'whether to skip building native modules'
@@ -411,7 +416,7 @@ jobs:
       - name: Copy pnpm cache to tmpfs
         id: copy-pnpm-cache
         background: true
-        if: ${{ runner.os == 'Linux' && inputs.skipInstallBuild != 'yes' }}
+        if: ${{ runner.os == 'Linux' && inputs.skipInstallBuild != 'yes' && !inputs.skipPnpmCacheCopy }}
         env:
           PNPM_STORE_PATH: ${{ steps.get-store-path.outputs.STORE_PATH }}
         run: |
